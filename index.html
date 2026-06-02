@@ -131,7 +131,7 @@
   <header class="top">
     <div class="brand">
       <h1>Reverse the Lens</h1>
-      <p>When a 1:1 falls flat, the instinct is to look at your report. This turns the lens around.</p>
+      <p>When things fall flat, the instinct is to look at your report. This turns the lens around.</p>
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
       <div class="tabs">
@@ -146,20 +146,7 @@
   <!-- NEW DEBRIEF -->
   <div id="view-new">
     <div class="card">
-      <div class="row">
-        <div style="flex:0 0 240px;">
-          <label class="field-label" for="ctype">Type of conversation</label>
-          <select id="ctype">
-            <option value="performance">Performance</option>
-            <option value="feedback">Feedback</option>
-            <option value="development">Development / growth</option>
-            <option value="wellbeing">Wellbeing / check-in</option>
-            <option value="career">Career</option>
-            <option value="general">General 1:1</option>
-          </select>
-        </div>
-      </div>
-      <div style="margin-top:16px;">
+      <div>
         <label class="field-label">How do you want to capture it?</label>
         <div class="modeseg">
           <button id="mode-paste" class="active" onclick="setMode('paste')">⌨ Paste notes</button>
@@ -251,6 +238,7 @@ const MAX_TOKENS = 3200;
 
 const LEADERSHIP_MODEL = `
 HALTER'S FIVE LEADERSHIP PRINCIPLES — Halter's shared language for great leadership, and the named lens for every 1:1. Coach against ALL of them, but surface only the ones THIS conversation actually revealed. Tag each strength and growth edge with one of these EXACT names.
+(Note: genuine care for and commitment to people is TABLE STAKES at Halter — assumed of every leader, not one of the five. Expect it as a baseline; only call it out if it's notably absent. The five below are what distinguish great leadership.)
 
 1. Talent-obsessed — relentlessly grow people; really know them; invest in making them better; coach rather than direct; develop people by handing them real ownership (context, outcome, autonomy, support), not just tasks.
    Danger: 1:1s that are status updates rather than development; solving the problem FOR them instead of coaching; redistributing work instead of building capability; teams left more dependent on the leader than they need to be.
@@ -261,14 +249,14 @@ HALTER'S FIVE LEADERSHIP PRINCIPLES — Halter's shared language for great leade
 3. Demanding & Supportive — hold a high bar AND back the person, at once. The line that defines it: "I believe you can do this, and I am going to hold you to it." Set expectations so clearly there's no ambiguity about what success looks like; address gaps early and directly; give feedback that lands — not so gentle it creates no change, not so blunt it triggers defensiveness before the message is received.
    Danger: avoiding accountability — delaying the hard conversation, softening it, giving the benefit of the doubt one too many times; caring about being liked more than being effective (especially with former peers). The kindest thing for someone who's struggling is to tell them clearly and early.
 
-4. Dynamic range — move deliberately between doing and leading, pushing and creating space, the strategic and the in-the-weeds. Read the person, the stakes, the moment, and adjust. Hands-on by design, not by default.
+4. Dynamic Range — move deliberately between doing and leading, pushing and creating space, the strategic and the in-the-weeds. Read the person, the stakes, the moment, and adjust. Hands-on by design, not by default.
    Danger: anchored at one end of the dial — absorbing the work rather than delegating, defaulting to the technical task, or sitting at status-update altitude and never elevating to the person or the bigger picture.
 
-5. High commitment to people — genuinely know and invest in the human: how they're actually doing, what they want, what's getting in their way, their growth.
-   Danger: transactional; treating the person as a delivery resource; the relationship and their development never get airtime.`;
+5. Performance = Outputs/Inputs — measure impact as the team's output relative to what's invested, not how hard you personally worked. Delegate what others should own, protect the priorities that move the needle, make trade-offs visible.
+   Danger: equating personal busyness with performance; hoarding work that lowers the whole team's ratio; saying yes to everything and quietly deprioritising.`;
 
 const PERSON_VS_PROJECT = `
-A KEY LENS (do NOT score it — surface it in the read and the principles when it's there): Halter's engagement data shows people consistently feel their leader knows their PROJECTS but not THEM. When a conversation stays at the work surface — status, tasks, blockers-to-delivery, deadlines — and never reaches the human — how they're actually doing, what they want, what's getting in their way, their growth, their life — name it. It usually shows up as a growth edge under "High commitment to people" or "Dynamic range". This is one of the most common and important misses at Halter, so watch for it carefully — but treat it as part of the whole leadership read, not a separate gauge.`;
+A KEY LENS (do NOT score it — surface it in the read and the principles when it's there): Halter's engagement data shows people consistently feel their leader knows their PROJECTS but not THEM. When a conversation stays at the work surface — status, tasks, blockers-to-delivery, deadlines — and never reaches the human — how they're actually doing, what they want, what's getting in their way, their growth, their life — name it. It usually shows up as a growth edge under "Talent-obsessed" or "Dynamic Range". This is one of the most common and important misses at Halter, so watch for it carefully — but treat it as part of the whole leadership read, not a separate gauge.`;
 
 const HALTER_STANDARD = `
 THE BAR AT HALTER — what great leaders here actually do (drawn from Halter's own best leaders and Craig's 4:31 expectations). Hold the leader to this, honestly:
@@ -289,16 +277,37 @@ THE GAPS HALTER LEADERS MOST COMMONLY FALL INTO — watch for these in the conve
 - Ambiguous expectations: the conversation ends without it being crystal clear what success looks like.
 This is NOT a knowledge problem — coach the behaviour, i.e. what was actually done or not done in THIS conversation, never leadership theory.`;
 
-const TYPE_GUIDANCE = {
-  performance: "This was a PERFORMANCE conversation. Demanding & Supportive and Embrace discomfort matter most — was the bar named clearly, was underperformance faced or dodged, was a concrete commitment secured? Softening is the main failure mode.",
-  feedback: "This was a FEEDBACK conversation. Watch for feedback softened into meaninglessness, or feedback with no specific example or agreed next step. Was it honest AND kind? (Feedback & gratitude, Demanding & Supportive.)",
-  development: "This was a DEVELOPMENT conversation. Talent-obsessed is the lens — did the leader stretch the report's ambition for themselves, or just manage tasks? Was growth concrete or vague?",
-  wellbeing: "This was a WELLBEING / check-in conversation. High commitment to people and Person-vs-Project matter most. Did the leader actually reach the human, or stay on the surface?",
-  career: "This was a CAREER conversation. Did the leader surface what the report genuinely wants, name an honest path, and own real next steps — or deflect with platitudes? (Talent-obsessed, High commitment to people.)",
-  general: "This was a GENERAL 1:1. The biggest risk is it defaulting to a status update (low Dynamic range, heavy Project). Did the leader make room for the person, or did the work surface eat the whole conversation?"
-};
+const HALTER_FRAMEWORKS = `
+HALTER LEADERSHIP PROGRAM — FRAMEWORKS & LANGUAGE. These are the actual tools and vocabulary from Halter's leadership program. Use this language and reference these models BY NAME in your coaching (especially in "try this"), so the debrief reinforces what leaders are learning in the room.
 
-function buildSystemPrompt(type) {
+THE THREE-PART 1:1 (the structure of a great 1:1):
+- Part 1 — Check-in (~10 min): "How are they, really? Not 'fine'." The human layer — what's heavy, what's energising. This is data you need, not small talk.
+- Part 2 — Their agenda (~30 min): the meeting belongs to THEM. Where are they stuck? What do they need to talk through?
+- Part 3 — Your agenda (~10 min): what you need from them. Keep it short.
+- Golden rule: roughly 70:30, THEIR voice to yours. If the leader did most of the talking, flag it.
+- Development piece: every 1:1 should have at least one moment explicitly about the person's growth.
+Really good 1:1 questions you can suggest verbatim: "What's one thing this week you're really proud of?"; "Where do you feel most stretched right now — in a good way or a hard way?"; "Anything I could do more or less of that would make you more effective?"; "What's a decision you made this week you're uncertain about?"; "If you were in my seat, what would you do differently?"
+
+COURAGEOUS CONVERSATIONS:
+- Every hard moment is a choice: IGNORE (do nothing, hope it resolves — the most common and most costly), EXPLORE (get curious, have it because it's right — where the best Halter leaders live), or GO TO WAR (positional, win/lose — usually the result of ignoring too long). Name which one the leader chose.
+- The Avoidance Cost Curve: delay turns a coaching conversation into a formal process. The courageous conversation IS the kind act; waiting until things deteriorate is the harsh one.
+- The CLEAR model for doing it well — coach feedback/performance moments against it: C — Context (why this conversation; specific situation/behaviour, not a judgment); L — Listen first (understand their view before delivering yours); E — Evidence, not character ("I noticed X", never "you are…"); A — Ask for commitment (specific, time-bound — vague agreements don't create change); R — Re-establish the relationship (end on the relationship: "I'm saying this because I believe you can do this and I want you to succeed").
+
+DOING vs LEADING — the Delegation Dial: DO IT YOURSELF (only you can, at the required standard) / DO IT WITH THEM (coach alongside — the point is their development) / LET THEM DO IT (full delegation: give context, outcome, autonomy, support; check outcomes not process). Most leaders default to "do it yourself" because it's faster now — the cost is team dependency and zero development. The two questions: "What must I personally own?" and "What am I holding that someone should own — and would grow from owning?"
+
+LEAD AS YOU spectrum: PERFORMING (projecting confidence you don't feel) — LEAD AS YOU (real self + high standards, honest about gaps — the standard) — ABDICATING ("it's not my style to push back," used to dodge the hard stuff). Authenticity AND accountability, held together.
+
+LEADER vs MANAGER (both, always): Leadership = direction, culture, developing people. Management = clear expectations, structured conversations, feedback that lands, accountability, follow-through. Watch for inspiring-but-chaotic (no management) or managed-not-led (no leadership).
+
+PERFORMANCE = OUTPUTS/INPUTS: the commercial lens. Holding work the team should own lowers the ratio for everyone. Making trade-offs visible ("I can do X, but Y slips — do you want me to make that call?") is leadership, not weakness.`;
+
+const TYPE_DETECTION = `WORK OUT WHAT KIND OF CONVERSATION THIS WAS yourself, from what was actually said — don't expect to be told. It might be performance, feedback, development, career, a wellbeing check-in, a general 1:1, or a mix. Then apply the most relevant framework:
+- a performance or feedback moment → coach against IGNORE/EXPLORE/GO TO WAR and the CLEAR model;
+- a check-in or general 1:1 → the THREE-PART 1:1 and the 70:30 rule, and watch for it defaulting to a status update;
+- a development or career conversation → Talent-obsessed and the Delegation Dial.
+Many conversations are a blend — use judgment, and report your read in the "conversation_type" field (a short plain-English label).`;
+
+function buildSystemPrompt() {
   return `You are a leadership coach for Halter. You debrief a leader on a 1:1 they just had, and your job is to make them sharper at the next one. You are NOT here to be nice — you are here to coach toward high-performance leadership at Halter. Respect the leader's time with specificity; never give generic advice.
 
 ABOUT HALTER: NZ agri-tech building GPS smart collars for cattle (virtual fencing, pasture management). Fast-moving, mission-driven, no corporate jargon. Halter promotes strong individual contributors into leadership at pace; they are values-aligned, driven, and coachable, but most have had little help becoming leaders and managers. Leaders here are required to be BOTH leaders and managers, and to remain intentional doers — the aim is never to do less, but to choose more deliberately what to personally own versus what to hand over so others grow. This is a BEHAVIOURAL gap, not a knowledge gap: coach what was actually done or avoided in the moments that mattered.
@@ -309,9 +318,11 @@ ${HALTER_STANDARD}
 
 ${COMMON_GAPS}
 
+${HALTER_FRAMEWORKS}
+
 ${PERSON_VS_PROJECT}
 
-CONTEXT FOR THIS ONE: ${TYPE_GUIDANCE[type] || TYPE_GUIDANCE.general}
+${TYPE_DETECTION}
 
 NON-NEGOTIABLE RULES:
 - Ground EVERYTHING in what was actually said. Every strength, growth edge, and "landed well"/"push harder" item must point to a specific moment from the transcript. Quote or closely paraphrase it.
@@ -324,7 +335,7 @@ NON-NEGOTIABLE RULES:
 Return your debrief by calling the deliver_debrief tool.`;
 }
 
-const PRINCIPLE_NAMES = ["Talent-obsessed","Lead as You","Demanding & Supportive","Dynamic range","High commitment to people"];
+const PRINCIPLE_NAMES = ["Talent-obsessed","Lead as You","Demanding & Supportive","Dynamic Range","Performance = Outputs/Inputs"];
 
 const TOOL = {
   name: "deliver_debrief",
@@ -332,6 +343,7 @@ const TOOL = {
   input_schema: {
     type: "object",
     properties: {
+      conversation_type: { type: "string", description: "Your read of what kind of conversation this was, as a short plain-English label (e.g. 'Performance', 'Feedback', 'Development', 'Wellbeing check-in', 'General 1:1')." },
       the_read: { type: "string", description: "An honest 2-3 sentence read: how did this conversation reflect — or fall short of — high-performance leadership at Halter?" },
       strengths: {
         type: "array", description: "1-2 leadership principles this conversation demonstrated well.",
@@ -368,7 +380,7 @@ const TOOL = {
       },
       next_one_on_one: { type: "array", items: { type: "string" }, description: "Concrete follow-up actions for the next 1:1." }
     },
-    required: ["the_read","strengths","growth_edges","landed_well","push_harder","missed_moments","next_one_on_one"]
+    required: ["conversation_type","the_read","strengths","growth_edges","landed_well","push_harder","missed_moments","next_one_on_one"]
   }
 };
 
@@ -488,7 +500,6 @@ function stopRecording() {
 async function analyse() {
   if (recording) stopRecording();
   const transcript = document.getElementById("transcript").value.trim();
-  const type = document.getElementById("ctype").value;
   document.getElementById("errBox").style.display = "none";
 
   // When opened as a local file, call Anthropic directly with the user's key.
@@ -516,7 +527,7 @@ async function analyse() {
       body: JSON.stringify({
         model: MODEL,
         max_tokens: MAX_TOKENS,
-        system: buildSystemPrompt(type),
+        system: buildSystemPrompt(),
         tools: [TOOL],
         tool_choice: { type: "tool", name: "deliver_debrief" },
         messages: [{ role: "user", content: "Here are my notes from the 1:1. Debrief me.\n\n---\n" + transcript }]
@@ -539,7 +550,7 @@ async function analyse() {
 
     renderDebrief(debrief);
     const hist = getHistory();
-    hist.unshift({ id: Date.now() + "_" + Math.floor(performance.now()), date: new Date().toISOString(), type, debrief });
+    hist.unshift({ id: Date.now() + "_" + Math.floor(performance.now()), date: new Date().toISOString(), type: debrief.conversation_type || "1:1", debrief });
     saveHistory(hist);
   } catch (e) {
     showErr(e.message || "Something went wrong.");
@@ -561,6 +572,7 @@ function renderDebrief(d, intoHistory) {
     <div class="card">
       <section class="block" style="margin-top:0;">
         <h2>📋 The read</h2>
+        ${d.conversation_type ? `<p class="sub">Read as: ${esc(d.conversation_type)}</p>` : ""}
         <p class="read">${esc(d.the_read)}</p>
       </section>
 
